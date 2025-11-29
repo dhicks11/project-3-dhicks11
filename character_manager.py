@@ -168,15 +168,29 @@ def load_character(character_name, save_directory="data/save_games"):
 
     if not os.path.exists(file_path):
         raise CharacterNotFoundError(f"Save file not found for {character_name}")
+
     try:
         data_map = {}
-        with open(file_path, 'r') as f:
+
+        with open(file_path, "r") as f:
             for line in f:
                 line = line.strip()
-                if line:
-                    key, value = line.split(': ', 1)
-                    data_map[key] = value
+                if not line:
+                    continue  # skip blank lines
 
+                # Must match "KEY: value"
+                if ": " not in line:
+                    raise InvalidSaveDataError(f"Malformed line in save file: '{line}'")
+
+                key, value = line.split(": ", 1)
+
+                # Convert lists back from comma-separated strings
+                if key in ("INVENTORY", "ACTIVE_QUESTS", "COMPLETED_QUESTS"):
+                    value = value.split(",") if value else []
+
+                data_map[key] = value
+
+        # Build character dictionary with proper type conversions
         character = {
             "name": data_map["NAME"],
             "class": data_map["CLASS"],
@@ -187,27 +201,22 @@ def load_character(character_name, save_directory="data/save_games"):
             "magic": int(data_map["MAGIC"]),
             "experience": int(data_map["EXPERIENCE"]),
             "gold": int(data_map["GOLD"]),
-            "inventory": data_map["INVENTORY"].split(',') if data_map["INVENTORY"] else [],
-            "active_quests": data_map["ACTIVE_QUESTS"].split(',') if data_map["ACTIVE_QUESTS"] else [],
-            "completed_quests": data_map["COMPLETED_QUESTS"].split(',') if data_map["COMPLETED_QUESTS"] else []
+            "inventory": data_map["INVENTORY"],
+            "active_quests": data_map["ACTIVE_QUESTS"],
+            "completed_quests": data_map["COMPLETED_QUESTS"],
         }
 
-        # 5. Final validation check
-        validate_character_data(character)  # This will raise InvalidSaveDataError
+        # Final validation
+        validate_character_data(character)
 
         return character
 
-    except (KeyError, ValueError, IndexError) as e:
-        # If a key is missing, int() fails, or split() fails, the file is corrupt.
-        raise SaveFileCorruptedError(
-            f"Save file for {character_name} is corrupted. Error: {e}"
-        ) from e
-    except IOError as e:
-        # Catch other file-reading errors
+    except InvalidSaveDataError:
+        raise
+    except Exception as e:
         raise SaveFileCorruptedError(
             f"Could not read save file for {character_name}. Error: {e}"
-        ) from e
-        
+        )
 def list_saved_characters(save_directory="data/save_games"):
     """
     Get list of all saved character names
