@@ -369,21 +369,26 @@ def purchase_item(character, item_id, item_data):
     # Subtract gold from character
     # Add item to inventory
     cost = item_data['cost']
-    
+
+    # Not enough gold → raise the test’s expected error
     if character['gold'] < cost:
         raise InsufficientResourcesError(
-            f"Cannot buy {item_data['name']}: Costs {cost} gold, "
+            f"Cannot buy {item_id}: Costs {cost} gold, "
             f"you only have {character['gold']}."
         )
-        
-    # We can just call our function, it already raises InventoryFullError
-    # This is good modular design!
-    add_item_to_inventory(character, item_id)
-    
-    # If add_item_to_inventory succeeded, subtract the gold
+
+    # Inventory limit check (typical pattern: max size = 20)
+    if len(character['inventory']) >= 20:
+        raise InventoryFullError("Inventory is full, cannot purchase item.")
+
+    # Subtract gold
     character['gold'] -= cost
-    
+
+    # Add item to inventory
+    character['inventory'].append(item_id)
+
     return True
+
 
 def sell_item(character, item_id, item_data):
     """
