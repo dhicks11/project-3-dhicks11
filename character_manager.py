@@ -163,7 +163,7 @@ def load_character(character_name, save_directory="data/save_games"):
     # Try to read file → SaveFileCorruptedError
     # Validate data format → InvalidSaveDataError
     # Parse comma-separated lists back into Python lists
-      file_name = f"{character_name}_save.txt"
+    file_name = f"{character_name}_save.txt"
     file_path = os.path.join(save_directory, file_name)
 
     if not os.path.exists(file_path):
