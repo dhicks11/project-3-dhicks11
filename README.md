@@ -143,6 +143,64 @@ Document your project with:
 
 ⚠️ **IMPORTANT: Test Integrity**
 
+
+Quest Chronicles: A Modular Text-Based RPG
+
+ Daylen Hicks
+
+Welcome to Quest Chronicles, a dynamic, text-based RPG written in Python. This game demonstrates a clean, modular design where different game systems are built as independent modules.
+
+AI Usage: An AI assistant was used to help explain and break down the logic, discuss the overall approach, and fix syntactical errors.
+
+Features
+
+Character Creation: Choose from four unique classes (Warrior, Mage, Rogue, Cleric).
+
+Leveling System: Gain XP from combat to level up and grow stronger.
+
+Persistent Saving: Automatic saving after every action. Load your game anytime.
+
+Full Inventory & Shop: Buy, sell, use, and equip items.
+
+Quest System: Accept, track, and complete quests with prerequisites.
+
+Turn-Based Combat: Fight enemies in simple, turn-based battles.
+
+Modular Data: Game content (items, quests) is loaded from .txt files for easy editing.
+
+How to Play
+
+Ensure you have Python 3 installed.
+
+Open your terminal or command prompt.
+
+Navigate to the project's root folder (the one containing main.py).
+
+Run the following command to start the game:
+
+python main.py
+
+
+Follow the on-screen prompts to start a new game or load a save.
+
+Module Breakdown
+
+This project is built using modularity, meaning each major game system is in its own file:
+
+main.py: The "brain" of the game. Runs the main loop and coordinates other modules.
+
+character_manager.py: Handles character creation, stats, leveling, and save/load.
+
+inventory_system.py: Manages inventory, item use, and equipment.
+
+quest_handler.py: Manages all quest logic (accepting, tracking, completing).
+
+combat_system.py: Handles all logic for turn-based battles.
+
+game_data.py: Loads item and quest data from .txt files.
+
+custom_exceptions.py: Defines custom errors (e.g., InventoryFullError) for clean error handling.
+
 Test files are provided for your learning but are protected. Modifying test files constitutes academic dishonesty and will result in:
 
 - Automatic zero on the project
