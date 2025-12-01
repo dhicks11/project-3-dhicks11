@@ -211,10 +211,7 @@ def equip_weapon(character, item_id, item_data):
         apply_stat_effect(character, stat_name, value)
         
         # Store equipped item info so we can unequip it later
-        character['equipped_weapon'] = {
-            'id': item_id,
-            'effect': item_data['effect']
-        }
+        character['equipped_weapon'] = item_id
         
         # Remove from general inventory
         remove_item_from_inventory(character, item_id)
@@ -266,10 +263,7 @@ def equip_armor(character, item_id, item_data):
         stat_name, value = parse_item_effect(item_data['effect'])
         apply_stat_effect(character, stat_name, value)
         
-        character['equipped_armor'] = {
-            'id': item_id,
-            'effect': item_data['effect']
-        }
+        character['equipped_armor'] = {item_id}
         remove_item_from_inventory(character, item_id)
         
         return f"{unequipped_msg}Equipped {item_data.get('name', item_id)}."
