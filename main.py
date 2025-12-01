@@ -545,20 +545,20 @@ def handle_character_death():
     # If revive: use character_manager.revive_character()
     # If quit: set game_running = False
     print("\n" + "!" * 20)
-print("      YOU ARE DEAD")
-print("!" * 20)
+    print("      YOU ARE DEAD")
+    print("!" * 20)
 
-revive_cost = 100 * current_character['level']
-print(f"Reviving will cost {revive_cost} gold.")
+    revive_cost = 100 * current_character['level']
+    print(f"Reviving will cost {revive_cost} gold.")
 
-while True:
-    choice = input(f"(R)evive (Cost: {revive_cost} G) or (Q)uit: ").strip().upper()
+    while True:
+        choice = input(f"(R)evive (Cost: {revive_cost} G) or (Q)uit: ").strip().upper()
 
     if choice == 'Q':
         print("You leave this world behind...")
         current_character = None
         game_running = False
-        break
+        return current_character, game_running
 
     elif choice == 'R':
         try:
@@ -566,12 +566,12 @@ while True:
             character_manager.revive_character(current_character)
             print(f"You paid {revive_cost} gold and have been revived!")
             print(f"Health: {current_character['health']}/{current_character['max_health']}")
-            break
+            return current_character, game_running
         except ValueError:
             print("Not enough gold to revive. You are lost...")
             current_character = None
             game_running = False
-            break
+            return current_character, game_running
 
     else:
         print("Invalid choice. Please select R or Q.")
