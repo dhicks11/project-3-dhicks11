@@ -171,9 +171,12 @@ def game_loop():
     game_running = True
     
     while game_running:
+        
         # 1. Check for death first!
-        if character_manager.is_character_dead(current_character):
-            handle_character_death()
+        # We also check if current_character is None, just in case
+        if current_character and character_manager.is_character_dead(current_character):
+            # Call the correct function and get return values
+            current_character, game_running = handle_character_death(current_character)
             # If they quit, game_running will be False and the loop will exit
             continue
             
@@ -203,6 +206,7 @@ def game_loop():
                 character_manager.save_character(current_character)
             except IOError as e:
                 print(f"!! CRITICAL: Failed to auto-save game: {e} !!")
+
 
 
 def game_menu():
@@ -335,16 +339,6 @@ def quest_menu():
     """Quest management menu"""
     global current_character, all_quests
     
-    # TODO: Implement quest menu
-    # Show:
-    #   1. View Active Quests
-    #   2. View Available Quests
-    #   3. View Completed Quests
-    #   4. Accept Quest
-    #   5. Abandon Quest
-    #   6. Complete Quest (for testing)
-    #   7. Back
-    # Handle exceptions from quest_handler
     while True:
         print("\n--- QUEST MENU ---")
         print("1. View Active Quests")
@@ -359,15 +353,15 @@ def quest_menu():
         try:
             if choice == '1':
                 active = quest_handler.get_active_quests(current_character, all_quests)
-                quest_handler.display_quest_list(active, list_title="Active Quests")
+                quest_handler.display_quest_list(active)
             
             elif choice == '2':
                 available = quest_handler.get_available_quests(current_character, all_quests)
-                quest_handler.display_quest_list(available, list_title="Available Quests")
+                quest_handler.display_quest_list(available)
             
             elif choice == '3':
                 completed = quest_handler.get_completed_quests(current_character, all_quests)
-                quest_handler.display_quest_list(completed, list_title="Completed Quests")
+                quest_handler.display_quest_list(completed)
             
             elif choice == '4':
                 quest_id = input("Enter Quest ID to accept: ").strip()
@@ -393,7 +387,17 @@ def quest_menu():
             print(f"An unexpected error occurred: {e}")
             
         input("\nPress Enter to continue...")
-
+    # TODO: Implement quest menu
+    # Show:
+    #   1. View Active Quests
+    #   2. View Available Quests
+    #   3. View Completed Quests
+    #   4. Accept Quest
+    #   5. Abandon Quest
+    #   6. Complete Quest (for testing)
+    #   7. Back
+    # Handle exceptions from quest_handler
+    
 def explore():
     """Find and fight random enemies"""
     global current_character
@@ -597,12 +601,21 @@ def main():
         load_game_data()
         print("Game data loaded successfully!")
     except MissingDataFileError:
-        print("Creating default game data...")
-        game_data.create_default_data_files()
-        load_game_data()
-    except InvalidDataFormatError as e:
-        print(f"Error loading game data: {e}")
-        print("Please check data files for errors.")
+        print("First time setup: No data files found. Creating defaults...")
+        try:
+            # CALL game_data
+            game_data.create_default_data_files()
+            load_game_data()
+            print("Default data files created and loaded!")
+        except Exception as e:
+            print(f"CRITICAL ERROR: Could not create data files: {e}")
+            return
+    except (InvalidDataFormatError, CorruptedDataError, QuestNotFoundError) as e:
+        print(f"CRITICAL ERROR: Game data is corrupted: {e}")
+        print("Please check your .txt files in the /data/ directory.")
+        return
+    except Exception as e:
+        print(f"An unexpected error occurred during data load: {e}")
         return
     
     # Main menu loop
@@ -616,8 +629,7 @@ def main():
         elif choice == 3:
             print("\nThanks for playing Quest Chronicles!")
             break
-        else:
-            print("Invalid choice. Please select 1-3.")
+        # No else needed, main_menu() guarantees a valid choice
 
 if __name__ == "__main__":
     main()
