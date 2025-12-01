@@ -4,7 +4,8 @@ Character Manager Module - Starter Code
 
 Name: Daylen Hicks
 
-AI Usage: [Document any AI assistance used]
+AI Usage: Used an AI assistant to help explain and break down the
+          logic, discuss the overall approach, and fix syntactical errors.
 
 This module handles character creation, loading, and saving.
 """
