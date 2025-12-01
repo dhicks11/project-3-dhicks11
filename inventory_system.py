@@ -154,7 +154,7 @@ def use_item(character, item_id, item_data):
         # We must remove the item *after* it's successfully used
         remove_item_from_inventory(character, item_id)
         
-        return f"Used {item_data['name']}. {stat_name} increased by {value}."
+        return f"Used {item_data['NAME']}. {stat_name} increased by {value}."
         
     except ValueError as e:
         # This catches errors from parse_item_effect
@@ -219,7 +219,7 @@ def equip_weapon(character, item_id, item_data):
         # Remove from general inventory
         remove_item_from_inventory(character, item_id)
         
-        return f"{unequipped_msg}Equipped {item_data['name']}."
+        return f"{unequipped_msg}Equipped {item_data['NAME']}."
         
     except ValueError as e:
         return f"Error equipping {item_id}: Invalid effect data. {e}"
@@ -272,7 +272,7 @@ def equip_armor(character, item_id, item_data):
         }
         remove_item_from_inventory(character, item_id)
         
-        return f"{unequipped_msg}Equipped {item_data['name']}."
+        return f"{unequipped_msg}Equipped {item_data['NAME']}."
         
     except ValueError as e:
         return f"Error equipping {item_id}: Invalid effect data. {e}"
@@ -500,7 +500,7 @@ def display_inventory(character, item_data_dict):
         item_info = item_data_dict.get(item_id)
         
         if item_info:
-            print(f"- {item_info['name']} (x{quantity})")
+            print(f"- {item_info['NAME']} (x{quantity})")
         else:
             # Fallback in case item data is missing
             print(f"- {item_id} (x{quantity}) [Unknown Item]")
